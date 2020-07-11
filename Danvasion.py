@@ -8,6 +8,7 @@ from game_stats import GameStats
 from button import Button
 from scoreboard import Scoreboard
 from bacon import Bacon
+from alien import Alien
 
 def run_game():
     #Intialize the game and create screen object
@@ -21,16 +22,18 @@ def run_game():
     play_button = Button(ai_settings, screen, "Play")
     
     
+    #Make group to store bullets, aliens and bacon
+    bullets = Group()
+    aliens = Group()
+    bacons = Group()
+    
     #Stats and Scoreboard
     stats = GameStats(ai_settings)
     sb = Scoreboard(ai_settings, screen, stats)
     
     #Make a ship
     ship = Ship(ai_settings, screen)
-    #Make group to store bullets, aliens and bacon
-    bullets = Group()
-    aliens = Group()
-    bacons = Group()
+
     
     #Create fleet of Aliens
     gf.create_fleet(ai_settings, screen, ship, aliens)
@@ -38,6 +41,10 @@ def run_game():
     #Set the background color
     bg_color = (230,230,230)
     running = True
+    #Play the music, baby
+    pygame.mixer.init()
+    pygame.mixer.music.load('soundtrack.ogg')
+    pygame.mixer.music.play(-1)
     #Start Main Loop
     while running:
         #for event in pygame.event.get():
@@ -46,6 +53,7 @@ def run_game():
                         running =  False
             gf.check_events(ship, event, ai_settings, stats, sb, play_button,  bullets, screen, aliens)
         if stats.game_active:
+            #Update objects
             gf.update_ship(ship)
             gf.update_bullets(ai_settings, screen, stats, sb, ship, aliens, bullets)
             gf.update_aliens(ai_settings, stats, sb, screen, ship, aliens, bullets, bacons)
