@@ -4,7 +4,8 @@ class GameStats():
         self.ai_settings = ai_settings
         self.reset_stats()
         self.game_active = False
-        self.high_score = 0
+        high_score = open('high_score.txt', 'r+')
+        self.high_score = int(high_score.read())
 
         
     def reset_stats(self):

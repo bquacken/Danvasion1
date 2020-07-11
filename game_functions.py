@@ -67,6 +67,7 @@ def update_screen(ai_settings, screen, stats, sb, ship, bullets, aliens, play_bu
         #Draw the score information
         sb.show_score()
 
+
 	#Draw play button if game is inactive
         if not stats.game_active:
                 play_button.draw_button()
@@ -86,9 +87,8 @@ def check_keydown_events(ship, event, ai_settings, bullets, screen):
                         new_bullet = Bullet(ai_settings, screen, ship)
                         bullets.add(new_bullet)
                         pygame.mixer.init()
-                        pew = pygame.mixer.Sound("pew.wav")
-                        pygame.mixer.music.load('pew.wav')
-                        pygame.mixer.music.play(0)
+                        pew = pygame.mixer.Sound('pew.wav')
+                        pygame.mixer.Sound.play(pew)
 
                         
 def check_keyup_events(ship, event, ai_settings, bullets, screen):
@@ -157,13 +157,13 @@ def update_bacon(ai_settings, stats, sb, screen, ship, aliens, bullets, bacons):
         #Draw bacon
         if len(aliens) > 5:
                 for alien in aliens.sprites():
-                        random_integer = randint(0,200)
+                        random_integer = randint(0,ai_settings.bacon_frequency)
                         if random_integer == 10:
                                 new_bacon = Bacon(ai_settings, screen, alien)
                                 bacons.add(new_bacon)
         else:
                 for alien in aliens.sprites():
-                        random_integer = randint(0,100)
+                        random_integer = randint(0,int(ai_settings.bacon_frequency/2))
                         if random_integer == 10:
                                 new_bacon = Bacon(ai_settings, screen, alien)
                                 bacons.add(new_bacon)
@@ -171,9 +171,14 @@ def update_bacon(ai_settings, stats, sb, screen, ship, aliens, bullets, bacons):
         check_bacon_ship_collisions(ai_settings, stats, sb, screen, ship, aliens, bullets, bacons)
 
 def check_bacon_ship_collisions(ai_settings, stats, sb, screen, ship, aliens, bullets, bacons):
+        #Check Bacon collisions with Ship
         for bacon in bacons.sprites():
                 if bacon.rect.colliderect(ship.rect):
                         ship_hit(ai_settings, stats, sb, screen, ship, aliens, bullets, bacons)
+                        pygame.mixer.init()
+                        ow_daniel = pygame.mixer.Sound("ow_daniel.wav")
+                        pygame.mixer.Sound.play(ow_daniel)
+
  
 def update_ship(ship):
         ship.update()
@@ -196,6 +201,12 @@ def check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, 
         #Respond to Alien-Bullet Collisions
         collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
         if collisions:
+                pygame.mixer.init()
+                ow_list = [pygame.mixer.Sound('ow_cody.wav'), pygame.mixer.Sound('ow_lizzy.wav'), pygame.mixer.Sound('ow_millie.wav'),
+                           pygame.mixer.Sound('ow_paige.wav'), pygame.mixer.Sound('ow_rachel.wav'), pygame.mixer.Sound('ow_sophie.wav'),pygame.mixer.Sound('ow_brendan.wav')]
+                random_integer = randint(0,len(ow_list)-1)
+                pygame.mixer.Sound.play(ow_list[random_integer])
+                
                 for aliens in collisions.values():
                         stats.score += ai_settings.alien_points*len(aliens)
                         sb.prep_score()
@@ -234,6 +245,7 @@ def ship_hit(ai_settings, stats, sb, screen, ship, aliens, bullets, bacons):
                 pygame.mouse.set_visible(True)
 
 def check_aliens_bottom(ai_settings, stats, sb, screen, ship, aliens, bullets, bacons):
+        #Check to see if Daniel dies
         screen_rect = screen.get_rect()
         for alien in aliens.sprites():
                 if alien.rect.bottom >= screen_rect.bottom:
@@ -243,6 +255,10 @@ def check_high_score(stats, sb):
         """Check to see if score is high score"""
         if stats.score > stats.high_score:
                 stats.high_score = stats.score
+                high_score = open('high_score.txt', 'r+')
+                high_score.truncate()
+                high_score_str = str(stats.high_score)
+                high_score.write(high_score_str)
                 sb.prep_high_score()
         
 

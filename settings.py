@@ -21,6 +21,7 @@ class Settings():
 
         #How quickly game speeds up
         self.speedup_scale = 1.1
+        self.bacon_speedup_scale = 2
         self.score_scale = 1.5
         
         self.initialize_dynamic_settings()
@@ -35,15 +36,21 @@ class Settings():
 
         self.fleet_direction = 1
 
+        #Shooting frequency
+        self.bacon_frequency = 180
+
         #Scoring
         self.alien_points = 51
 
     def increase_speed(self):
         #Speed settings and alien point values
         self.ship_speed_factor *= self.speedup_scale
-        self.bullet_speed_factor *= self.speedup_scale
+        #self.bullet_speed_factor *= self.speedup_scale
         self.alien_speed_factor *= self.speedup_scale
         self.bacon_speed_factor *= self.speedup_scale
+
+        #increase bacon frequency
+        self.bacon_frequency -= self.bacon_speedup_scale
 
         self.alien_points = int(self.alien_points * self.score_scale)
 

@@ -10,7 +10,7 @@ class Scoreboard():
         self.screen_rect = screen.get_rect()
         self.ai_settings = ai_settings
         self.stats = stats
-
+        
         #Font settings
         self.text_color = (255,255,255)
         self.font = pygame.font.SysFont("comicsansmsboldttf", 32)
@@ -54,7 +54,7 @@ class Scoreboard():
 
     def prep_level(self):
         """Turn level into a rendered image"""
-        self.level_image = self.font.render(str(self.stats.level), True, self.text_color,
+        self.level_image = self.font.render('Lvl: ' + str(self.stats.level), True, self.text_color,
                                             self.ai_settings.image)
 
         #Display Score at the top right of the screen
